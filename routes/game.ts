@@ -12,7 +12,7 @@ router.post('/session', authenticate, async (req: Request, res: Response) => {
     console.log('Creating game session - User:', req.user);
     console.log('Request body:', req.body);
 
-    const { cardNumber, betAmount } = req.body;
+    const { cardNumber, betAmount, createdAt } = req.body;
     
     if (!req.user) {
       return res.status(401).json({ error: 'User not authenticated' });
@@ -43,13 +43,13 @@ router.post('/session', authenticate, async (req: Request, res: Response) => {
     user.wallet -= betAmount;
     await user.save();
     
-    // Create game session with all required fields
+    // Create game session with the provided createdAt time or current time
     const gameSession = new GameSession({
       userId: req.user._id,
       cardNumber,
       betAmount,
       status: 'active',
-      createdAt: new Date()
+      createdAt: createdAt ? new Date(createdAt) : new Date() // Use provided time or current time
     });
     
     await gameSession.save();

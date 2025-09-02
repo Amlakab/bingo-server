@@ -4,9 +4,10 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-
+import transactionRoutes from './routes/transactions';
 import authRoutes from './routes/auth';
 import gameRoutes from './routes/game';
+import gamesRoutes from './routes/games';
 import walletRoutes from './routes/wallet';
 import adminRoutes from './routes/admin';
 import agentRoutes from './routes/agent';
@@ -23,7 +24,7 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL || "http://localhost:3000",
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST","PUT","DELETE", "PATCH"],
   }
 });
 
@@ -39,6 +40,8 @@ app.use('/api/game', gameRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/agent', agentRoutes);
+app.use('/api/games', gamesRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
